@@ -1,0 +1,47 @@
+# Android Studio related files
+.idea/
+*.iml
+.gradle/
+local.properties
+
+# Build output
+/build/
+app/build/
+
+# Cache files
+*.log
+.DS_Store
+*.class
+*.dex
+
+# Kotlin specific
+*.kotlin_module
+*.tmp
+*.lock
+
+# Gradle
+/buildSrc/.gradle/
+/buildSrc/build/
+
+# Generated resource files
+*.apk
+*.ap_
+*.keystore
+*.jks
+
+# External libraries
+/libs/
+
+# IntelliJ related files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+*.iws
+
+# Miscellaneous
+.classpath
+.project
+.settings/
+Thumbs.db
+*.swp

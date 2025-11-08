@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:enabled="true"
+        android:icon="@drawable/baseline_home_filled_24"
+        android:title="Incio"/>
+    <item
+        android:id="@+id/nav_projects"
+        android:enabled="true"
+        android:icon="@drawable/baseline_folder_24"
+        android:title="Proyectos"/>
+    <item
+        android:id="@+id/nav_businesses"
+        android:enabled="true"
+        android:icon="@drawable/baseline_people_24"
+        android:title="Remodeladores"/>
+    <item
+        android:id="@+id/nav_portfolios"
+        android:enabled="true"
+        android:icon="@drawable/baseline_photo_library_24"
+        android:title="Portafolios"/>
+    <item
+        android:id="@+id/nav_profile"
+        android:enabled="true"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Mi Perfil"/>
+</menu>

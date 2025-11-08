@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="#F5F7FA">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_register_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Regístrate"
+        android:fontFamily="@font/montserrat"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#3949AB"
+        android:layout_marginBottom="34dp"
+        android:gravity="center" />
+
+    <ImageView
+        android:id="@+id/iv_profile_photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_person_placeholder"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/circle_background" />
+
+    <Button
+        android:id="@+id/btn_upload_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Subir Foto" />
+
+
+    <!-- Full Name Input -->
+    <EditText
+        android:id="@+id/et_full_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/montserrat"
+        android:hint="Nombre completo"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/ic_person"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"
+        android:inputType="textPersonName"
+        android:imeOptions="actionNext"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:autofillHints="name"/>
+
+    <!-- Email Input -->
+    <EditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/montserrat"
+        android:hint="Correo electrónico"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/ic_email"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"
+        android:inputType="textEmailAddress"
+        android:imeOptions="actionNext"
+        android:autofillHints="emailAddress"/>
+
+    <!-- Password Input -->
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/montserrat"
+        android:hint="Contraseña"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/ic_lock"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"
+        android:inputType="textPassword"
+        android:imeOptions="actionDone"
+        android:autofillHints="newPassword"/>
+
+    <!-- Confirm Password Input -->
+    <EditText
+        android:id="@+id/et_confirm_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/montserrat"
+        android:hint="Confirmar contraseña"
+        android:textColorHint="@color/black"
+        android:drawableStart="@drawable/ic_lock"
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"
+        android:inputType="textPassword"
+        android:imeOptions="actionDone"
+        android:autofillHints="newPassword"/>
+
+    <!-- Terms and Conditions Checkbox -->
+    <CheckBox
+        android:id="@+id/cb_terms_conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Remodeler Account Checkbox -->
+    <CheckBox
+        android:id="@+id/cb_is_remodeler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:text="Es una cuenta de remodelador?"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Register Button -->
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:text="Registrarse"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#3949AB"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Already have an account Text -->
+    <TextView
+        android:id="@+id/tv_already_have_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:text="¿Ya tienes una cuenta? Inicia sesión"
+        android:textColor="#000000"
+        android:textSize="14sp" />
+</LinearLayout>

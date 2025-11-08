@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_activity"
+    tools:context=".home_screen.Activity.HomeActivity"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gray">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:paddingTop="15dp"
+            android:background="?attr/colorPrimary"
+            android:backgroundTint="#3F51B5"
+            android:minHeight="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/toolbar_logo"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Restyle Logo"
+                android:src="@drawable/restyle_logo" />
+
+            <TextView
+                android:id="@+id/toolbar_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ReStyle"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <Space
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"/>
+
+            <!--User Picture in Toolbar-->
+            <ImageView
+                android:id="@+id/toolbar_client"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:contentDescription="User Picture"
+                android:src="@drawable/user"
+                android:visibility="invisible"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="275dp"
+                android:layout_height="275dp"
+                android:contentDescription="Home Circle Background"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:background="@drawable/circular_background" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="ReStyle Home"
+                android:src="@drawable/restyle_home" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/home_text_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="Tu proyecto de diseño y remodelador ahora más cerca de ti"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="#3F51B5"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/home_text_regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="Conectando remodeladores líderes con clientes en todo el Perú desde 2024."
+            android:fontFamily="@font/montserrat"
+            android:textColor="#8D8D8D"
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"/>
+
+        <!-- Home Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="50dp"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/signup_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registrarse"
+                android:textColor="@color/white"
+                android:paddingHorizontal="30dp"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textFontWeight="600"
+                android:textAllCaps="false"
+                android:background="@drawable/filled_button" />
+
+            <Space
+                android:layout_width="45dp"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Iniciar Sesión"
+                android:textColor="#3F51B5"
+                android:paddingHorizontal="30dp"
+                android:textSize="15sp"
+                android:fontFamily="@font/montserrat"
+                android:textFontWeight="600"
+                android:textAllCaps="false"
+                android:background="@drawable/outlined_button" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

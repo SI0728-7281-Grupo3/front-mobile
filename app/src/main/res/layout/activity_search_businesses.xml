@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_businesses"
+    tools:context=".business_search.Activity.SearchBusinessesActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/gray">
+
+    <!-- Toolbar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:paddingTop="15dp"
+            android:background="?attr/colorPrimary"
+            android:backgroundTint="#3F51B5"
+            android:minHeight="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/toolbar_logo"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Restyle Logo"
+                android:src="@drawable/restyle_logo" />
+
+            <TextView
+                android:id="@+id/toolbar_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="ReStyle"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <Space
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"/>
+
+            <!--User Picture in Toolbar-->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/toolbar_client"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                app:shapeAppearanceOverlay="@style/MyCustomShapeAppearance_SmallComponent"
+                android:src="@drawable/user" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </LinearLayout>
+
+    <!-- Content -->
+
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        app:tabIndicatorColor="#3F51B5"
+        app:tabSelectedTextColor="#3F51B5"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
+        app:tabTextColor="#8D8D8D"
+        app:tabIndicatorFullWidth="true"
+        android:background="@color/gray">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hogar" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_rooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habitaciones" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_kitchen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cocina" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Otros" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- Search Bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+        app:startIconDrawable="@drawable/baseline_search_24"
+        app:startIconTint="#8D8D8D">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:hint="Buscar por nombre"
+            android:inputType="text"
+            android:textColorHint="@color/gray"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Cards Recycler View -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewBusinesses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="125dp"/>
+
+        <!-- Bottom Navigation -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                app:itemIconTint="@color/white"
+                app:itemTextAppearanceActive="@style/BottomNavigationTextAppearance"
+                app:itemTextAppearanceInactive="@style/BottomNavigationTextAppearance"
+                app:itemTextColor="@color/white"
+                app:labelVisibilityMode="labeled"
+                android:layout_alignParentBottom="true"
+                app:menu="@menu/bottom_navigation_menu"/>
+        </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>
