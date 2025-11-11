@@ -1,6 +1,5 @@
 package Fragment
 
-import Persistence.UserHelper
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,20 +12,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.restyle_mobile.R
+import com.example.restyle_mobile.Interface.RestyleApiClient
+import com.example.restyle_mobile.Beans.SignInRequest
 import com.example.restyle_mobile.business_portfolio.Activity.Portfolio
 import com.example.restyle_mobile.business_search.Activity.SearchBusinessesActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
-
-    lateinit var dbHelper: UserHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login, container, false)
-
-        dbHelper = UserHelper(requireContext())
 
         val etEmail = view.findViewById<EditText>(R.id.et_email)
         val etPassword = view.findViewById<EditText>(R.id.et_password)
@@ -35,36 +36,18 @@ class LoginFragment : Fragment() {
         val tvRegisterPrompt = view.findViewById<TextView>(R.id.tv_register_prompt)
 
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
+            val email = etEmail.text.toString().trim()
+            val password = etPassword.text.toString().trim()
 
-            val (isLoginSuccessful, isRemodeler, userId) = dbHelper.checkUserWithId(email, password)
-
-            if (isLoginSuccessful) {
-                Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-
-                // Save user session in SharedPreferences
-                val sharedPreferences = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putString("userId", userId) // Store user ID in session
-                editor.apply()
-
-                // Check if the user is a remodeler or not and act accordingly
-                val intent = if (isRemodeler == true) {
-                    Intent(requireContext(), Portfolio::class.java)
-                } else {
-                    Intent(requireContext(), SearchBusinessesActivity::class.java)
-                }
-                startActivity(intent)
-
-                requireActivity().finish()
-            } else {
-                Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            loginUser(email, password)
         }
 
         tvRecoverPassword.setOnClickListener {
-            // Navigate to RecoverPasswordFragment
             val recoverFragment = RecoverPasswordFragment()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, recoverFragment)
@@ -81,5 +64,42 @@ class LoginFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun loginUser(email: String, password: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RestyleApiClient.authService.signIn(SignInRequest(email, password))
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        val data = response.body()
+                        if (data != null) {
+                            Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+
+                            // Guardar sesión (token + id de usuario)
+                            val prefs = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                            prefs.edit()
+                                .putInt("userId", data.id)
+                                .putString("username", data.username)
+                                .putString("token", data.token)
+                                .apply()
+
+                            // 🔹 Si tu backend devuelve roles o tipo de usuario, puedes decidir a dónde redirigir aquí
+                            val intent = Intent(requireContext(), SearchBusinessesActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Invalid credentials (${response.code()})", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Connection error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
