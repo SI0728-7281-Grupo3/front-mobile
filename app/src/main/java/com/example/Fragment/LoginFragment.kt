@@ -85,7 +85,6 @@ class LoginFragment : Fragment() {
                                 .putString("token", data.token)
                                 .apply()
 
-                            // 🔹 Si tu backend devuelve roles o tipo de usuario, puedes decidir a dónde redirigir aquí
                             val intent = Intent(requireContext(), SearchBusinessesActivity::class.java)
                             startActivity(intent)
                             requireActivity().finish()

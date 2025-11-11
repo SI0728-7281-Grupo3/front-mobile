@@ -91,7 +91,7 @@
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sandra Avila"
+        android:text="User"
         android:textColor="#000000"
         android:textSize="18sp"
         android:drawableStart="@drawable/baseline_person_24"
@@ -207,6 +207,18 @@
         android:layout_marginBottom="28dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="28dp"
+        android:background="@color/darker_gray"
+        android:text="Cerrar Sesión"
+        android:textColor="#FFFFFF"
+        app:backgroundTint="@color/darker_gray" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"

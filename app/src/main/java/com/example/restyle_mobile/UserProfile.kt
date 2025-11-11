@@ -1,47 +1,72 @@
 package com.example.restyle_mobile
 
-import Persistence.UserHelper
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.bumptech.glide.Glide
+import com.example.restyle_mobile.home_screen.Activity.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class UserProfile : AppCompatActivity() {
 
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var dbHelper: UserHelper
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_user_profile)
 
-        // Retrieve userId from SharedPreferences
-        sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getString("userId", null)
+        // Obtener datos guardados en SharedPreferences
+        val prefs = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val username = prefs.getString("username", "Usuario desconocido")
+        val userId = prefs.getInt("userId", -1)
+        val token = prefs.getString("token", null)
+        val email = prefs.getString("email", "correo@ejemplo.com")
+        val phone = prefs.getString("phone", "Sin número")
+        val description = prefs.getString("description", "Sin descripción disponible")
 
-        if (userId != null) {
-            // Fetch user data using UserHelper
-            dbHelper = UserHelper(this)
-            val user = dbHelper.getUserDataById(userId)
+        // Vincular vistas
+        val tvUserName = findViewById<TextView>(R.id.tvUserName)
+        val tvEmail = findViewById<TextView>(R.id.tvEmail)
+        val tvPhoneNumber = findViewById<TextView>(R.id.tvPhoneNumber)
+        val tvAbout = findViewById<TextView>(R.id.tvAbout)
+        val ivUserImage = findViewById<ImageView>(R.id.toolbar_client)
 
-            // Display user data in UI
-            val tvUserName = findViewById<TextView>(R.id.tvUserName)
-            tvUserName.text = user?.fullName
-        }
+        // Mostrar datos del usuario
+        tvUserName.text = username
+        tvEmail.text = email
+        tvPhoneNumber.text = phone
+        tvAbout.text = description
 
-        // Toolbar
+        // Cargar imagen (temporalmente un placeholder)
+        Glide.with(this)
+            .load("https://via.placeholder.com/150")
+            .circleCrop()
+            .into(ivUserImage)
+
+        // Configurar Toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Navigation Bar
+        // Configurar Bottom Navigation
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
         BottomNavigationHelper().setupBottomNavigation(this, bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.nav_profile
+
+        // Logout Button
+        val logoutButton: Button = findViewById<Button>(R.id.logout_button)
+        logoutButton.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
+

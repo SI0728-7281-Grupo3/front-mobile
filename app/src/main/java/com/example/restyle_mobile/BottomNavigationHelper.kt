@@ -7,44 +7,56 @@ import com.example.restyle_mobile.business_search.Activity.SearchBusinessesActiv
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BottomNavigationHelper {
+
     fun setupBottomNavigation(activity: Activity, bottomNavigationView: BottomNavigationView) {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
+
                 R.id.nav_home -> {
                     if (activity !is SearchBusinessesActivity) {
                         val intent = Intent(activity, SearchBusinessesActivity::class.java)
                         activity.startActivity(intent)
+                        activity.overridePendingTransition(0, 0)
                     }
                     true
                 }
+
                 R.id.nav_projects -> {
                     if (activity !is SearchBusinessesActivity) {
                         val intent = Intent(activity, SearchBusinessesActivity::class.java)
                         activity.startActivity(intent)
+                        activity.overridePendingTransition(0, 0)
                     }
                     true
                 }
+
                 R.id.nav_businesses -> {
                     if (activity !is SearchBusinessesActivity) {
                         val intent = Intent(activity, SearchBusinessesActivity::class.java)
                         activity.startActivity(intent)
+                        activity.overridePendingTransition(0, 0)
                     }
                     true
                 }
+
                 R.id.nav_portfolios -> {
                     if (activity !is Portfolio) {
                         val intent = Intent(activity, Portfolio::class.java)
                         activity.startActivity(intent)
+                        activity.overridePendingTransition(0, 0)
                     }
                     true
                 }
+
                 R.id.nav_profile -> {
-                    if (activity !is CompanyProfile) {
-                        val intent = Intent(activity, CompanyProfile::class.java)
+                    if (activity !is UserProfile) {
+                        val intent = Intent(activity, UserProfile::class.java)
                         activity.startActivity(intent)
+                        activity.overridePendingTransition(0, 0)
                     }
                     true
                 }
+
                 else -> false
             }
         }

@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
-        android:hint="Correo electrónico"
+        android:hint="Username"
         android:textColorHint="@color/black"
         android:drawableStart="@drawable/ic_email"
         android:padding="12dp"
