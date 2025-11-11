@@ -1,42 +1,37 @@
 package Fragment
 
-import Persistence.UserHelper
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
-import com.example.restyle_mobile.Interface.RetrofitClient
-import com.example.restyle_mobile.Interface.UploadResponse
+import com.example.restyle_mobile.Beans.SignUpRequest
+import com.example.restyle_mobile.Interface.RestyleApiClient
 import com.example.restyle_mobile.R
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.File
 
 class RegisterFragment : Fragment() {
 
-    private lateinit var dbHelper: UserHelper
     private var photoUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
     private val placeholderImageUrl = "https://via.placeholder.com/150"
-    private val termsAndConditionsText = "Acepto los <a href='https://mondongodev.github.io/restyle-landing-page/terms.html'>términos y condiciones</a>."
+    private val termsAndConditionsText =
+        "Acepto los <a href='https://si0728-7281-grupo3.github.io/landingpage/terms.html'>términos y condiciones</a>."
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,21 +39,23 @@ class RegisterFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_register, container, false)
 
-        dbHelper = UserHelper(requireContext())
+        val etFullName = view.findViewById<EditText?>(R.id.et_full_name)
+        val etEmail = view.findViewById<EditText?>(R.id.et_email)
+        val etPassword = view.findViewById<EditText?>(R.id.et_password)
+        val etConfirmPassword = view.findViewById<EditText?>(R.id.et_confirm_password)
+        // Estos dos pueden no existir en tu layout — los obtenemos como nullable y usamos "" por defecto
+        val etPhone = view.findViewById<EditText?>(R.id.et_phone)
+        val etDescription = view.findViewById<EditText?>(R.id.et_description)
 
-        val etFullName = view.findViewById<EditText>(R.id.et_full_name)
-        val etEmail = view.findViewById<EditText>(R.id.et_email)
-        val etPassword = view.findViewById<EditText>(R.id.et_password)
-        val etConfirmPassword = view.findViewById<EditText>(R.id.et_confirm_password)
         val cbIsRemodeler = view.findViewById<CheckBox>(R.id.cb_is_remodeler)
         val btnRegister = view.findViewById<Button>(R.id.btn_register)
         val btnSelectPhoto = view.findViewById<Button>(R.id.btn_upload_photo)
         val ivSelectedPhoto = view.findViewById<ImageView>(R.id.iv_profile_photo)
+        val cbTermsAndConditions = view.findViewById<CheckBox>(R.id.cb_terms_conditions)
         val tvAlreadyHaveAccount = view.findViewById<TextView>(R.id.tv_already_have_account)
 
-        val cbTermsAndConditions = view.findViewById<CheckBox>(R.id.cb_terms_conditions)
-        val spannableString = SpannableString(HtmlCompat.fromHtml(termsAndConditionsText, HtmlCompat.FROM_HTML_MODE_LEGACY))
-
+        val spannableString =
+            SpannableString(HtmlCompat.fromHtml(termsAndConditionsText, HtmlCompat.FROM_HTML_MODE_LEGACY))
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 val termsIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://mondongodev.github.io/restyle-landing-page/terms.html"))
@@ -67,11 +64,11 @@ class RegisterFragment : Fragment() {
         }
         val startIndex = spannableString.indexOf("términos y condiciones")
         val endIndex = startIndex + "términos y condiciones".length
-        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+        if (startIndex >= 0) {
+            spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         cbTermsAndConditions.text = spannableString
-        cbTermsAndConditions.movementMethod = android.text.method.LinkMovementMethod.getInstance()
-
+        cbTermsAndConditions.movementMethod = LinkMovementMethod.getInstance()
 
         btnSelectPhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
@@ -80,43 +77,56 @@ class RegisterFragment : Fragment() {
         }
 
         btnRegister.setOnClickListener {
-            val fullName = etFullName.text.toString()
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
-            val confirmPassword = etConfirmPassword.text.toString()
+            val fullName = etFullName?.text?.toString()?.trim() ?: ""
+            val email = etEmail?.text?.toString()?.trim() ?: ""
+            val password = etPassword?.text?.toString() ?: ""
+            val confirmPassword = etConfirmPassword?.text?.toString() ?: ""
+            val phone = etPhone?.text?.toString() ?: ""
+            val description = etDescription?.text?.toString() ?: ""
             val isRemodeler = cbIsRemodeler.isChecked
 
-            if (password != confirmPassword) {
-                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
+            if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(requireContext(), "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (photoUri == null) {
-                saveUserWithPhoto(fullName, email, password, isRemodeler, placeholderImageUrl)
-            } else {
-                val file = getFileFromUri(photoUri!!)
-                if (file != null) {
-                    val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), file)
-                    val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
-
-                    val authHeader = "Bearer bdc6eae81f2cbf71568284ec1d0ff625a6f8e7e6"
-
-                    RetrofitClient.uploadImage(authHeader, body).enqueue(object : Callback<UploadResponse> {
-                        override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
-                            val photoUrl = response.body()?.data?.link ?: placeholderImageUrl
-                            saveUserWithPhoto(fullName, email, password, isRemodeler, photoUrl)
-                        }
-
-                        override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                            Toast.makeText(requireContext(), "Image upload failed, using placeholder", Toast.LENGTH_SHORT).show()
-                            saveUserWithPhoto(fullName, email, password, isRemodeler, placeholderImageUrl)
-                        }
-                    })
-                } else {
-                    Toast.makeText(requireContext(), "Failed to get image file, using placeholder", Toast.LENGTH_SHORT).show()
-                    saveUserWithPhoto(fullName, email, password, isRemodeler, placeholderImageUrl)
-                }
+            if (password != confirmPassword) {
+                Toast.makeText(requireContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            if (!cbTermsAndConditions.isChecked) {
+                Toast.makeText(requireContext(), "Debes aceptar los términos y condiciones", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val roles = if (isRemodeler) listOf("ROLE_REMODELER") else listOf("ROLE_CONTRACTOR")
+            val photoUrl = placeholderImageUrl
+            val username = fullName
+
+            val signUpRequest = SignUpRequest(
+                username = username,
+                password = password,
+                roles = roles,
+                email = email,
+                firstName = "",
+                paternalSurname = "",
+                maternalSurname = "",
+                description = description,
+                phone = phone,
+                image = photoUrl
+            )
+
+            //Log.d("RegisterFragment", "Rol seleccionado: $roles")
+
+            // Convertir objeto a JSON real
+            //val gson = com.google.gson.GsonBuilder().setPrettyPrinting().create()
+            //val jsonPayload = gson.toJson(signUpRequest)
+            //Log.d("RegisterFragment", "JSON enviado al backend:\n$jsonPayload")
+
+            registerUser(signUpRequest)
+
+            registerUser(signUpRequest)
         }
 
         tvAlreadyHaveAccount.setOnClickListener {
@@ -130,27 +140,34 @@ class RegisterFragment : Fragment() {
         return view
     }
 
-    private fun saveUserWithPhoto(fullName: String, email: String, password: String, isRemodeler: Boolean, photoUrl: String) {
-        val success = dbHelper.addUser(fullName, email, password, isRemodeler, photoUrl)
+    private fun registerUser(request: SignUpRequest) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RestyleApiClient.authService.signUp(request)
 
-        if (success) {
-            Toast.makeText(requireContext(), "Registration Successful", Toast.LENGTH_SHORT).show()
-            val loginFragment = LoginFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, loginFragment)
-                .addToBackStack(null)
-                .commit()
-        } else {
-            Toast.makeText(requireContext(), "Registration Failed", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
+                        val loginFragment = LoginFragment()
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, loginFragment)
+                            .addToBackStack(null)
+                            .commit()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Toast.makeText(requireContext(), "Error al registrarse: ${response.code()} ${errorBody ?: ""}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error HTTP: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Fallo de red: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
         }
-    }
-
-    private fun getFileFromUri(uri: Uri): File? {
-        val inputStream = requireContext().contentResolver.openInputStream(uri)
-        val file = File(requireContext().cacheDir, "uploaded_image.jpg")
-        val outputStream = file.outputStream()
-        inputStream?.copyTo(outputStream)
-        return file.takeIf { it.exists() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
